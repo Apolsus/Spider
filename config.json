@@ -1,0 +1,104 @@
+{
+  "Device": [
+    {
+      "name": "RT1",
+      "type": "router",
+      "interfaces": ["LoopBack1", "GigabitEthernet0/0", "GigabitEthernet0/1"]
+    },
+    {
+      "name": "SW1",
+      "type": "switch",
+      "interfaces": ["GigabitEthernet0/1"]
+    }
+  ],
+
+  "Link": [
+    ["RT1.GigabitEthernet0/0", "SW1.GigabitEthernet0/1"],
+    ["RT1.GigabitEthernet0/1", "SW1.GigabitEthernet0/1"]
+  ],
+
+  "IP": {
+    "RT1.GigabitEthernet0/1": "172.10.0.1/32"
+  },
+
+  "VLAN": [
+    {
+      "id": "1",
+      "ip": "172.0.0.1/24",
+      "interfaces": ["SW1.GigabitEthernet0/1", "SW2.GigabitEthernet0/2"]
+    }
+  ],
+
+  "OSPF": [
+    {
+      "area": "0.0.0.0",
+      "devices": [
+        {
+          "name": "RT1",
+          "router_id": "0.0.0.0",
+          "network": [
+            "172.10.0.1/32", "192.168.4.1/32"
+          ],
+          "cost": {
+            "GigabitEthernet0/1": 100
+          }
+        }
+      ]
+    }
+  ],
+
+  "BGP": [
+    {
+      "area": 200,
+      "devices": [
+        {
+          "name": "RT1",
+          "rr": false,
+          "peers": [
+            {
+              "address_family": "unicast",
+              "ip": "43.175.173.227",
+              "area": 200
+            }
+          ],
+          "peer_group": [
+            {
+              "address_family": "unicast",
+              "name": "ex",
+              "scope": "external",
+              "peer": ["43.175.173.227"]
+            }
+          ],
+          "network": [
+            "172.10.0.1/32", "192.168.4.1/32"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "MPLS": [
+    {
+      "name": "RT1",
+      "lsr_id": "1.1.1.1",
+      "ldp": ["GigabitEthernet0/1"]
+    }
+  ],
+
+  "VPN": [
+    {
+      "name": "buaa",
+      "rd": "200:1",
+      "vpn_target_import": ["400:1", "400:2"],
+      "vpn_target_export": ["200:1"],
+      "devices": [
+        {
+          "name": "RT1",
+          "interfaces": [
+            "GigabitEthernet0/0"
+          ]
+        }
+      ]
+    }
+  ]
+}
